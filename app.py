@@ -36,7 +36,7 @@ def home_route():
         db.session.commit()
         return redirect('/users')
     else:
-        users = User.query.all()
+        users = User.query.order_by('last_name').all()
         return render_template('users.html', users=users)
 
 
@@ -63,6 +63,8 @@ def edit_user(user_name):
         user.first_name = request.form.get('first-name')
         user.last_name = request.form.get('last-name')
         user.image_url = request.form.get('image-url')
+        if user.image_url == "":
+            user.image_url = "http://maestroselectronics.com/wp-content/uploads/bfi_thumb/blank-user-355ba8nijgtrgca9vdzuv4.jpg"
 
         # user = User(user_name=user_name, first_name=first_name,
         #             last_name=last_name, image_url=image_url)
