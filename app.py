@@ -27,7 +27,8 @@ def home_route():
         first_name = request.form.get('first-name')
         last_name = request.form.get('last-name')
         image_url = request.form.get('image-url')
-
+        if image_url == "":
+            image_url = None
         user = User(user_name=user_name, first_name=first_name,
                     last_name=last_name, image_url=image_url)
 
@@ -42,3 +43,40 @@ def home_route():
 @app.route('/users/new')
 def add_user():
     return render_template('add_user.html')
+
+
+@app.route('/users/<user_name>')
+def user_profile(user_name):
+    user = User.query.filter_by(user_name=user_name).one_or_none()
+    if user == None:
+        return redirect('/')
+    else:
+        return render_template('profile.html',
+                            user=user)
+
+
+@app.route('/users/<user_name>/edit', methods=["GET", "POST"])
+def edit_user(user_name):
+    user = User.query.filter_by(user_name=user_name).one_or_none()
+
+    if request.method == "POST":
+        user.first_name = request.form.get('first-name')
+        user.last_name = request.form.get('last-name')
+        user.image_url = request.form.get('image-url')
+
+        # user = User(user_name=user_name, first_name=first_name,
+        #             last_name=last_name, image_url=image_url)
+
+        db.session.commit()
+
+        return redirect(f'/users/{user_name}')
+    else:
+        return render_template('edit_user.html', user=user)
+
+
+@app.route('/users/<user_name>/delete', methods=["POST"])
+def delete_user(user_name):
+    user = User.query.filter_by(user_name=user_name).one_or_none()
+    db.session.delete(user)
+    db.session.commit()
+    return redirect('/users')
