@@ -102,5 +102,15 @@ class FlaskTests(TestCase):
         with self.client:
             result = self.client.get('/posts')
             self.assertEqual(result.status_code, 200)
-            self.assertIn(b'<h5 class="card-title">test 1 title</h5>', result.data)
+            self.assertIn(b'<h5 class="card-title title-preview">test 1 title</h5>', result.data)
+
+    def test_create_post(self):
+        """ testing blog post creation """
+        with self.client:
+            result = self.client.post('/users/spike-test/posts', data={
+                "post-title": "autotest title",
+                "post-content": "autotest content for blog post testing"
+            }, follow_redirects=True)
+            self.assertEqual(result.status_code, 200)
+            self.assertIn(b'autotest title', result.data)
 
