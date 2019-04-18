@@ -8,28 +8,34 @@
   </div>
   <div class="d-flex justify-content-start align-content-stretch row">
     
-        {% for title, content, date_created, user_name, id in posts %}
+        {% for title, content, date_created, user_name, image_url, id in posts %}
 
         <div class="post-div col-md-6">
-              <div class="card my-3 mx-3">
-                <a href="/posts/{{id}}">
-                
-                    <div class="card-body">
+              <div class="card mt-4">
+                  
+                  <div class="card-body">
                       <div class="d-flex row">
-      
-                          <div class="col-6 d-flex justify-content-start">
-                              <h5 class="card-title">{{title}}</h5>
-                          </div>
-                          <div class="col-6 d-flex justify-content-end">
-                              <h5 class="card-title">{{user_name}}</h5>
-                          </div>
+                          
+                          <div class="col-10 d-flex justify-content-start">
+                            <a href="/posts/{{id}}">
+                                <h5 class="card-title title-preview">{{title}}</h5>
+                            </a>
+                            </div>
+                            <div class="col-2 d-flex justify-content-end">
+                                <a href="/users/{{user_name}}">
+
+
+                                    <img class="img-thumbnail user-thumbnail" src="{{image_url}}" alt="{{user_name}}">
+
+
+                                </a>
+                            </div>
       
                       </div>
       
-                      <p class="card-text">{{content}}</p>
+                      <p class="card-text preview">{{content}}</p>
                     </div>
                 
-                </a>
               </div>
           </div>
   

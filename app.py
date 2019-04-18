@@ -47,6 +47,7 @@ def posts():
                                 Post.content,
                                 Post.date_created,
                                 User.user_name,
+                                User.image_url,
                                 Post.id).join(User).all()
 
     return render_template('posts.html', posts=posts)

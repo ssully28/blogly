@@ -1,11 +1,12 @@
 
 from app import app
 from unittest import TestCase
-from models import db, connect_db, User
+from models import db, connect_db, User, Post
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///blogly_test'
 connect_db(app)
 db.create_all()
+Post.query.delete()
 User.query.delete()
 
 # Add test-users to blogly_test
@@ -13,10 +14,21 @@ whiskey = User(user_name='whisky-test', first_name='Whiskey', last_name="dog")
 bowser = User(user_name='bowser-test', first_name='Bowser', last_name="dog")
 spike = User(user_name='spike-test', first_name='Spike', last_name="porcupine")
 
+# Add test posts to test-db
+post1 = Post(title='test 1 title', content='''Normally, both your asses would be dead as fucking fried chicken, but you happen to pull this shit while I''m in a transitional period so I don''t wanna kill you, I wanna help you. But I can''t give you this case, it don''t belong to me. Besides, I''ve already been through too much shit this morning over this case to hand it over to your dumb ass.
+''', user_name='whisky-test')
+post2 = Post(title='test 2 title', content='''Now that we know who you are, I know who I am. I''m not a mistake! It all makes sense! In a comic, you know how you can tell who the arch-villain''s going to be? He''s the exact opposite of the hero. And most times they''re friends, like you and me! I should''ve known way back when... You know why, David? Because of the kids. They called me Mr Glass.'''
+, user_name='bowser-test')
+post3 = Post(title='test 3 title', content='''The path of the righteous man is beset on all sides by the iniquities of the selfish and the tyranny of evil men. Blessed is he who, in the name of charity and good will, shepherds the weak through the valley of darkness, for he is truly his brother''s keeper and the finder of lost children. And I will strike down upon thee with great vengeance and furious anger those who would attempt to poison and destroy My brothers. And you will know My name is the Lord when I lay My vengeance upon thee.
+''', user_name='spike-test')
+
 # Add new objects to session, so they'll persist
 db.session.add(whiskey)
 db.session.add(bowser)
 db.session.add(spike)
+db.session.add(post1)
+db.session.add(post2)
+db.session.add(post3)
 
 # Commit--otherwise, this never gets saved!
 db.session.commit()
@@ -79,7 +91,16 @@ class FlaskTests(TestCase):
         """ testing post request to delete user from database """
 
         with self.client:
-            result = self.client.post('/users/bowser-test/delete',
+            result = self.client.post('/users/cool-guy-johnny-B/delete',
                                         follow_redirects=True)
             self.assertEqual(result.status_code, 200)
-            self.assertNotIn(b'bowser-test', result.data)
+            self.assertNotIn(b'cool-guy-johnny-B', result.data)
+
+    def test_posts_page(self):
+        """ testing test posts show up on the page """
+
+        with self.client:
+            result = self.client.get('/posts')
+            self.assertEqual(result.status_code, 200)
+            self.assertIn(b'<h5 class="card-title">test 1 title</h5>', result.data)
+
