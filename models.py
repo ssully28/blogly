@@ -45,14 +45,19 @@ class Post(db.Model):
     id = db.Column(db.Integer,
                    primary_key=True,
                    autoincrement=True)
+    
     title = db.Column(db.String(100),
                           nullable=False,
                           unique=False)
+    
     content = db.Column(db.Text,
                  nullable=False)
+    
     date_created = db.Column(db.DateTime,
                  nullable=False,
                  default=datetime.utcnow)
+    
     user_name = db.Column(db.String(25),
                         db.ForeignKey('users.user_name'))
+    
     user = db.relationship('User')
