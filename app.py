@@ -121,3 +121,35 @@ def add_post(user_name):
 @app.route('/users/<user_name>/posts/new')
 def submit_post_form(user_name):
     return render_template('create_post.html', user_name=user_name)
+
+
+@app.route('/posts/<post_id>/delete', methods=['POST'])
+def delete_post(post_id):
+    post = Post.query.filter_by(id=post_id).one_or_none()
+    
+    if post == None:
+        return redirect('/')
+    else:
+        user_name = post.user_name
+        db.session.delete(post)
+        db.session.commit()
+        return redirect(f'/users/{user_name}')
+
+@app.route('/posts/<post_id>/edit', methods=['GET', 'POST'])
+def edit_post_route(post_id):
+    post = Post.query.filter_by(id=post_id).one_or_none()
+
+    if post == None:
+        return redirect('/')
+    else:
+
+        if request.method == 'POST':
+            post.title = request.form.get('post-title')
+            post.content = request.form.get('post-content')
+            
+            print(f'**********{post.content}***************')
+
+            db.session.commit()
+            return redirect(f'/posts/{post.id}')
+        else:
+            return render_template('edit_post.html', post=post)
