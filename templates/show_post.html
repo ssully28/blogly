@@ -11,6 +11,14 @@
             <p>{{post.content}}</p>
         </div>
     </div>
+    
+    <form action="/posts/{{post.id}}/delete" method="POST">
+        <button class="btn btn-danger">Delete Post</button>
+    </form>
+
+    <form action="/posts/{{post.id}}/edit" method="GET">
+        <button class="btn btn-primary">Edit Post</button>
+    </form>
 
 
 
