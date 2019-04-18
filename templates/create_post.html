@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<div class="container">
+        <h1 class="display-5 mt-4">Add post for {{user_name}}</h1>
+        <form id="create-post-form" method="POST" action="/users/{{user_name}}/posts" class="mt-4">
+            <div class="form-group row">
+                <label for="post-title" class="col-sm-2 col-form-label"><h6>Post Title</h6></label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="post-title" name="post-title"/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="post-content" class="col-sm-2 col-form-label"><h6>content</h6></label>
+                <div class="col-sm-10">
+                    <textarea maxlength="1000"  form="create-post-form" class="form-control" id="post-content" name="post-content"/></textarea>
+                </div>
+            </div>
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-success" id="add-user-btn">Submit Post</button>
+            </div>
+        </form>
+    </div>
+
+{% endblock %}

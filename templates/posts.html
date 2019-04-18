@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+  <div class="d-flex align-items-center row my-3">
+    <h1 class="col-2">Posts</h1>
+  </div>
+  <div class="d-flex justify-content-start align-content-stretch row">
+    
+        {% for title, content, date_created, user_name, id in posts %}
+
+        <div class="post-div col-md-6">
+              <div class="card my-3 mx-3">
+                <a href="/posts/{{id}}">
+                
+                    <div class="card-body">
+                      <div class="d-flex row">
+      
+                          <div class="col-6 d-flex justify-content-start">
+                              <h5 class="card-title">{{title}}</h5>
+                          </div>
+                          <div class="col-6 d-flex justify-content-end">
+                              <h5 class="card-title">{{user_name}}</h5>
+                          </div>
+      
+                      </div>
+      
+                      <p class="card-text">{{content}}</p>
+                    </div>
+                
+                </a>
+              </div>
+          </div>
+  
+        {% endfor %}
+    
+    </div>
+</div>
+
+
+
+{% endblock %}

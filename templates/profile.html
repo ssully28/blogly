@@ -26,7 +26,26 @@
         <form action="/users/{{user.user_name}}/delete" class="col-2" method="POST">
             <button class="btn btn-danger">delete</button>
         </form>
+        <form action="/users/{{user.user_name}}/posts/new" class="col-2" method="GET">
+            <button class="btn btn-primary">Add post</button>
+        </form>
     </div>
+
+
+    <div class="user-posts mt-4">
+        <h1 class="display-5">{{user.user_name}}'s posts</h1>
+        <ul>
+            {% for post in posts %}
+            
+            <li>
+                <a href="/posts/{{post.id}}">{{post.title}}</a>
+            </li>
+            
+            {% endfor %}
+        </ul>
+    </div>
+
+
 
 
 
