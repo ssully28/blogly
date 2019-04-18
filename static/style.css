@@ -1,9 +1,12 @@
 .preview {
-    width: 100%;
-    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-}
+    display: -webkit-box;
+    line-height: 16px;     /* fallback */
+    max-height: 32px;      /* fallback */
+    -webkit-line-clamp: 2; /* number of lines to show */
+    -webkit-box-orient: vertical;
+ }
 
 .user-thumbnail{
     max-height: 50px;
