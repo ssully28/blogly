@@ -2,7 +2,7 @@
 
 from flask import Flask, render_template, request, redirect
 from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db, User
+from models import db, connect_db, User, Post
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///blogly'
@@ -40,6 +40,27 @@ def home_route():
         return render_template('users.html', users=users)
 
 
+@app.route('/posts')
+def posts():
+    # posts = Post.query.order_by('date_created').all()
+    posts = db.session.query(Post.title,
+                                Post.content,
+                                Post.date_created,
+                                User.user_name,
+                                Post.id).join(User).all()
+
+    return render_template('posts.html', posts=posts)
+
+
+@app.route('/posts/<post_id>')
+def show_post(post_id):
+    post = Post.query.filter_by(id=post_id).one_or_none()
+    if post == None:
+        return redirect ('/')
+    else:
+        return render_template('show_post.html', post=post)
+
+
 @app.route('/users/new')
 def add_user():
     return render_template('add_user.html')
@@ -48,11 +69,12 @@ def add_user():
 @app.route('/users/<user_name>')
 def user_profile(user_name):
     user = User.query.filter_by(user_name=user_name).one_or_none()
+    user_posts = Post.query.filter_by(user_name = user_name).all()
     if user == None:
         return redirect('/')
     else:
         return render_template('profile.html',
-                            user=user)
+                            user=user, posts=user_posts)
 
 
 @app.route('/users/<user_name>/edit', methods=["GET", "POST"])
@@ -82,3 +104,19 @@ def delete_user(user_name):
     db.session.delete(user)
     db.session.commit()
     return redirect('/users')
+
+
+@app.route('/users/<user_name>/posts', methods=["POST"])
+def add_post(user_name):
+    title = request.form.get('post-title')
+    content = request.form.get('post-content')
+    post = Post(title=title, content=content, user_name=user_name)
+
+    db.session.add(post)
+    db.session.commit()
+    return redirect(f'/users/{user_name}')
+
+
+@app.route('/users/<user_name>/posts/new')
+def submit_post_form(user_name):
+    return render_template('create_post.html', user_name=user_name)
