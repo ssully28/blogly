@@ -43,12 +43,16 @@ def home_route():
 @app.route('/posts')
 def posts():
     # posts = Post.query.order_by('date_created').all()
-    posts = db.session.query(Post.title,
-                                Post.content,
-                                Post.date_created,
-                                User.user_name,
-                                User.image_url,
-                                Post.id).join(User).all()
+    posts = Post.query.all()
+    # import pdb
+    # pdb.set_trace()
+
+    # posts = db.session.query(Post.title,
+    #                          Post.content,
+    #                          Post.date_created,
+    #                          User.user_name,
+    #                          User.image_url,
+    #                          Post.id).join(User).all()
 
     return render_template('posts.html', posts=posts)
 
@@ -56,8 +60,8 @@ def posts():
 @app.route('/posts/<post_id>')
 def show_post(post_id):
     post = Post.query.filter_by(id=post_id).one_or_none()
-    if post == None:
-        return redirect ('/')
+    if post is None:
+        return redirect('/')
     else:
         return render_template('show_post.html', post=post)
 
@@ -70,12 +74,12 @@ def add_user():
 @app.route('/users/<user_name>')
 def user_profile(user_name):
     user = User.query.filter_by(user_name=user_name).one_or_none()
-    user_posts = Post.query.filter_by(user_name = user_name).all()
-    if user == None:
+    user_posts = Post.query.filter_by(user_name=user_name).all()
+    if user is None:
         return redirect('/')
     else:
         return render_template('profile.html',
-                            user=user, posts=user_posts)
+                               user=user, posts=user_posts)
 
 
 @app.route('/users/<user_name>/edit', methods=["GET", "POST"])
@@ -125,9 +129,10 @@ def submit_post_form(user_name):
 
 @app.route('/posts/<post_id>/delete', methods=['POST'])
 def delete_post(post_id):
+    # change to 404 handling here....
     post = Post.query.filter_by(id=post_id).one_or_none()
-    
-    if post == None:
+ 
+    if post is None:
         return redirect('/')
     else:
         user_name = post.user_name
@@ -135,19 +140,18 @@ def delete_post(post_id):
         db.session.commit()
         return redirect(f'/users/{user_name}')
 
+
 @app.route('/posts/<post_id>/edit', methods=['GET', 'POST'])
 def edit_post_route(post_id):
     post = Post.query.filter_by(id=post_id).one_or_none()
 
-    if post == None:
+    if post is None:
         return redirect('/')
     else:
 
         if request.method == 'POST':
             post.title = request.form.get('post-title')
             post.content = request.form.get('post-content')
-            
-            print(f'**********{post.content}***************')
 
             db.session.commit()
             return redirect(f'/posts/{post.id}')
