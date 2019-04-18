@@ -30,30 +30,40 @@ class FlaskTests(TestCase):
         self.client = app.test_client()
     
     def test_home(self):
+        """ test users are displayed on /users """
+
         with self.client:
             result = self.client.get('/users')
             self.assertEqual(result.status_code, 200)
             self.assertIn(b'<h1 class="col-2">Users</h1>', result.data)
 
     def test_root(self):
+        """ test root route redirects to /users """
+
         with self.client:
             result = self.client.get('/', follow_redirects=True)
             self.assertEqual(result.status_code, 200)
             self.assertIn(b'<h1 class="col-2">Users</h1>', result.data)
 
     def test_add_form(self):
+        """ test that add user form is accessible """
+
         with self.client:
             result = self.client.get('/users/new')
             self.assertEqual(result.status_code, 200)
             self.assertIn(b'<h1 class="display-5 mt-4">Create a user</h1>', result.data)
 
     def test_user_profile(self):
+        """ test that user profile is accessible """
+
         with self.client:
             result = self.client.get('/users/whisky-test')
             self.assertEqual(result.status_code, 200)
             self.assertIn(b'<h1 class="display-4">\n            whisky-test\n        </h1>', result.data)
 
     def test_add_user(self):
+        """ testing post request to add user to database """
+
         with self.client:
             result = self.client.post('/users', data={
                 "user-name": "cool-guy-johnny-B",
@@ -66,6 +76,8 @@ class FlaskTests(TestCase):
                                         result.data)
     
     def test_delete_user(self):
+        """ testing post request to delete user from database """
+
         with self.client:
             result = self.client.post('/users/bowser-test/delete',
                                         follow_redirects=True)
